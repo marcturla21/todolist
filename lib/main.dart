@@ -81,3 +81,9 @@ class _MyAppState extends State<MyApp> {
       },
     );
   }
+
+    void deleteToDo(int index) {
+    todoBox.deleteAt(index);
+  }
+
+  
