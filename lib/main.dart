@@ -86,6 +86,64 @@ class _MyAppState extends State<MyApp> {
     todoBox.deleteAt(index);
   }
 
+  void editToDo(int index) {
+    TextEditingController todoController = TextEditingController();
+    todoController.text = Todo.fromJson(json.decode(todoBox.getAt(index)!)).description;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Edit Todo',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: todoController,
+                decoration: InputDecoration(
+                  labelText: 'Edit Todo',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      final text = todoController.text;
+                      if (text.isNotEmpty) {
+                        final updatedTodo = Todo(
+                          description: text,
+                          isDone: Todo.fromJson(json.decode(todoBox.getAt(index)!)).isDone,
+                        );
+                        todoBox.putAt(index, json.encode(updatedTodo.toJson()));
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text('Save'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,10 +208,19 @@ class _MyAppState extends State<MyApp> {
                             ),
                           ],
                         ),
-                        IconButton(
-                          onPressed: () => deleteToDo(index),
-                          icon: Icon(Icons.delete),
-                          color: Colors.red,
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => editToDo(index), // Call edit function on press
+                              icon: Icon(Icons.edit),
+                              color: Colors.blue,
+                            ),
+                            IconButton(
+                              onPressed: () => deleteToDo(index),
+                              icon: Icon(Icons.delete),
+                              color: Colors.red,
+                            ),
+                          ],
                         ),
                       ],
                     ),
