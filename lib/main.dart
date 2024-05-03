@@ -176,4 +176,13 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+class Todo {
+  String description;
+  bool isDone;
+
+  Todo({
+    required this.description,
+    required this.isDone,
+  });
+
   
