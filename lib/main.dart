@@ -82,11 +82,11 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-    void deleteToDo(int index) {
+  void deleteToDo(int index) {
     todoBox.deleteAt(index);
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -185,7 +185,7 @@ class Todo {
     required this.isDone,
   });
 
-    Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'description': description,
       'isDone': isDone,
