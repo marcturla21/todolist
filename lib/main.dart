@@ -86,4 +86,94 @@ class _MyAppState extends State<MyApp> {
     todoBox.deleteAt(index);
   }
 
+   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFFC0CB),
+        title: Text('TO DO LIST'),
+        centerTitle: true,
+      ),
+      body: ValueListenableBuilder(
+        valueListenable: todoBox.listenable(),
+        builder: (context, Box<String> box, _) {
+          if (box.values.isEmpty) {
+            return Center(
+              child: Image.network(
+                'https://i.pinimg.com/originals/fc/16/dd/fc16dddf2b229d606ed8333f00a3b1f9.gif',
+                fit: BoxFit.cover,
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: box.length,
+            itemBuilder: (context, index) {
+              final todoJson = box.getAt(index);
+              if (todoJson != null) {
+                try {
+                  final todo = Todo.fromJson(json.decode(todoJson));
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: todo.isDone,
+                              onChanged: (bool? newValue) {
+                                setState(() {
+                                  todo.isDone = newValue ?? false;
+                                  todoBox.putAt(index, json.encode(todo.toJson()));
+                                  if (newValue == true) {
+                                    completedTasks.add(todo.description);
+                                  } else {
+                                    completedTasks.remove(todo.description);
+                                  }
+                                });
+                              },
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              todo.description,
+                              style: TextStyle(
+                                decoration: todo.isDone ? TextDecoration.lineThrough : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: () => deleteToDo(index),
+                          icon: Icon(Icons.delete),
+                          color: Colors.red,
+                        ),
+                      ],
+                    ),
+                  );
+                } catch (e) {
+                  print("Error decoding todo at index $index: $e");
+                }
+              }
+              return SizedBox.shrink();
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: addToDo,
+        tooltip: 'Add To Do',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
   
