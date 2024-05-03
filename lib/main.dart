@@ -185,4 +185,17 @@ class Todo {
     required this.isDone,
   });
 
-  
+    Map<String, dynamic> toJson() {
+    return {
+      'description': description,
+      'isDone': isDone,
+    };
+  }
+
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(
+      description: json['description'],
+      isDone: json['isDone'],
+    );
+  }
+}
